@@ -1,1 +1,1 @@
-*.cpp linguist-language=C++
+bin/*.cpp linguist-language=C++
