@@ -4,7 +4,7 @@ Execute PVI-SNMP commands for B&amp;R plcs
 TODO description
 
 # Disclaimer
-brsnmp comes „as is“, e.g. without support and warranty.
+brsnmp comes â€žas isâ€œ, e.g. without support and warranty.
 You can freely copy it but use it at your own risk.
 
 # PVI
@@ -22,4 +22,7 @@ So, do not blame brsnmp for that and contact your local B&R office to buy it.
    Code::Blocks
    http://www.codeblocks.org/
    
+# Dependencies
+Thanks to https://github.com/adishavit/argh for the command line parser
+
 
