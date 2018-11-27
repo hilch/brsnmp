@@ -74,8 +74,8 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ]
 ```
 
-## --<NAME>=<VALUE>
-sets parameter <NAME> to <VALUE> e.g.
+## set parameter
+sets parameter "<NAME>" to "<VALUE>" e.g.
 ```
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
