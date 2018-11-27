@@ -17,7 +17,7 @@ Coldstart "120"
 
 
 ## Usage:
-
+```
 -h, --help                       this help
 -v, --version                    software version
 -f=<EXPR>, --filter=<EXPR>       Filter(regular expression following ECMA syntax)
@@ -25,6 +25,7 @@ Coldstart "120"
 -l, --list                       list MAC addresses of available B&R plc
 -d, --details                    list detailed properties of available B&R plc
 --<NAME>=<VALUE>                 set parameter <NAME> to <VALUE> (see --details)
+```
 
 ### ´--version`
 outputs the program version in JSON e.g.
@@ -92,7 +93,7 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ```
 
 ### `--<NAME>=<VALUE>`
-sets parameter "<NAME>" to "<VALUE>" e.g.
+sets parameter `<NAME>` to `<VALUE>` e.g.
 ```
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
