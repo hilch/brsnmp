@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="mingw32" />
-				<Option parameters="-details " />
+				<Option parameters="-f=X20CP1583 --ipAddress=192.168.0.14 --subnetMask=255.255.255.0" />
 				<Compiler>
 					<Add option="-std=c++14" />
 					<Add option="-g" />
@@ -46,6 +46,7 @@
 		<Unit filename="include/MyPviConnection.h" />
 		<Unit filename="include/PviCom.h" />
 		<Unit filename="include/argh.h" />
+		<Unit filename="include/stringsplit.h" />
 		<Unit filename="src/MyPviConnection.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Extensions>

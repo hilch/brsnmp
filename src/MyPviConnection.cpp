@@ -1,17 +1,18 @@
 #ifdef _DEBUG
 #include <iostream>
 #endif // _DEBUG
-#include <cstring>
 #include <algorithm>
 #include <array>
+#include <regex>
 #include "MyPviConnection.h"
 #include "PviCom.h"
+#include "stringsplit.h"
 
-
+using std::string;
 
 MyPviConnection*  MyPviConnection::m_instance = nullptr;
 
-MyPviConnection::MyPviConnection() : m_list{false}, m_detailedList{false}
+MyPviConnection::MyPviConnection() : m_listRequested{false}, m_detailedListRequested{false}, m_timeout(3000)
 {
     m_result = PviInitialize( 0, 0, "", NULL );
 #ifdef _DEBUG
@@ -41,31 +42,57 @@ MyPviConnection& MyPviConnection::getInstance()
     return *m_instance;
 }
 
-void MyPviConnection::AppendMACFilter(std::string macAddress)
+int MyPviConnection::SetFilter(string filterRegEx )
 {
-    m_macFilter.push_back(macAddress);
+    m_filter = filterRegEx;
+    return 0;
+}
+
+int MyPviConnection::SetTimeout(int timeout )
+{
+    m_timeout = timeout;
+    if( m_timeout < 500 )
+        m_timeout = 500;
+    if( m_timeout > 10000 )
+        m_timeout = 10000;
+    return 0;
 }
 
 void MyPviConnection::ShowList(bool verbose)
 {
-    m_list = true;
-    m_detailedList = verbose;
+    m_listRequested = true;
+    m_detailedListRequested = verbose;
 }
 
 
-std::string &MyPviConnection::operator()()
+void MyPviConnection::AppendVariable( string name, string value )
 {
-    WaitUntilConnected();
+    ProcessVariable pvar;
+    pvar.name = name;
+    pvar.value = value;
+    m_processVariables.push_back(pvar);
+}
 
-    if( m_detailedList )
-        m_list = false;
+const std::vector<string> MyPviConnection::GetWritablePvars(void)
+{
+    return { "baudrate", "ipAddress", "subnetMask", "ipMethod", "inaNodeNumber", "inaPortNumber", "hostName",
+             "defaultGateway", "dnsActivated", "dnsFromDhcp", "dnsServer1", "dnsServer2", "dnsServer3"     };
+}
+
+
+string &MyPviConnection::operator()()
+{
+    WaitUntilPviIsConnected();
+
+    if( m_detailedListRequested )
+        m_listRequested = false;
 
     ExecuteCommand();
     return(m_output);
 }
 
 
-void MyPviConnection::WaitUntilConnected()
+void MyPviConnection::WaitUntilPviIsConnected()
 {
     WPARAM wParam;
     LPARAM lParam;
@@ -75,8 +102,6 @@ void MyPviConnection::WaitUntilConnected()
 
     if( m_result == 0 )
     {
-
-
         while( true )
         {
             PviGetNextResponse(&wParam, &lParam, &hMsg, 0 );
@@ -108,13 +133,13 @@ void MyPviConnection::WaitUntilConnected()
         return;
 }
 
-
-int MyPviConnection::GetPlcDetails(std::string macAddress, std::vector<std::string> &details)
+/* get detailed information from 'station' given as MAC address */
+int MyPviConnection::GetPlcDetails(string macAddress, std::vector<string> &details)
 {
     DWORD linkIdPvar;
     DWORD linkIdStation;
-    std::string stationDescriptor = "CD=\" /CN=" + macAddress;
-    std::vector<std::string> vars;
+    string stationDescriptor = "CD=\" /CN=" + macAddress;
+    std::vector<string> vars;
     constexpr unsigned BUFSIZE = 16384;
     char *buffer = new char[BUFSIZE];
 
@@ -127,24 +152,24 @@ int MyPviConnection::GetPlcDetails(std::string macAddress, std::vector<std::stri
         PviRead( linkIdStation, POBJ_ACC_LIST_EXTERN, NULL, 0, buffer, BUFSIZE );
         if( m_result == 0 )
         {
-            const char delimiter[] = {"\t"};
-            char * p = std::strtok ( buffer, delimiter );
-            while (p!=0)
+            std::vector<string> fields;
+            string s(buffer);
+            split( fields, s, "\t", false );
+            for( string s : fields )
             {
-                char *p2;
-                if( NULL!= (p2 = strstr(p, " " KWDESC_OBJTYPE "=" KWOBJTYPE_PVAR))  )
+                size_t pos;
+                if( (pos = s.find( " " KWDESC_OBJTYPE "=" KWOBJTYPE_PVAR)) != std::string::npos )
                 {
-                    vars.push_back(std::string(p,p2-p));
+                    vars.push_back(s.substr(0, pos));
                 }
-                p = std::strtok( NULL, delimiter );
             }
         }
         /* get value and vartype */
         for( auto v : vars )
         {
-            std::string objectName = "@Pvi/LnSNMP/Device/Station/" + v;
-            std::string descriptor =  "CD=" + v;
-            m_result = PviCreate( &linkIdPvar, objectName.c_str(), POBJ_PVAR, descriptor.c_str() , PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
+            string objectName = "@Pvi/LnSNMP/Device/Station/" + v;
+            string descriptor =  "CD=" + v;
+            m_result = PviCreate( &linkIdPvar, objectName.c_str(), POBJ_PVAR, descriptor.c_str(), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
             if( m_result == 0 )
             {
                 m_result = PviRead( linkIdPvar, POBJ_ACC_TYPE_EXTERN, NULL, 0, buffer, BUFSIZE );
@@ -155,8 +180,8 @@ int MyPviConnection::GetPlcDetails(std::string macAddress, std::vector<std::stri
                         m_result = PviRead( linkIdPvar, POBJ_ACC_DATA, NULL, 0, buffer, BUFSIZE );
                         if( m_result == 0 )
                         {
-                            std::string s( buffer );
-                            details.push_back( "\"" + v + "\"" + " : \"" + s + "\"" );
+                            string s( buffer );
+                            details.push_back( "\"" + v + "\"" + ":\"" + s + "\"" );
                         }
                     }
                     else if( strstr(buffer, KWDESC_PVTYPE "=" KWPVTYPE_INT32) )  /* int32 */
@@ -165,7 +190,7 @@ int MyPviConnection::GetPlcDetails(std::string macAddress, std::vector<std::stri
                         m_result = PviRead( linkIdPvar, POBJ_ACC_DATA, NULL, 0, &i, sizeof(i) );
                         if( m_result == 0 )
                         {
-                            details.push_back( "\"" + v + "\"" + " : \"" + std::to_string(i) + "\"" );
+                            details.push_back( "\"" + v + "\"" + ":\"" + std::to_string(i) + "\"" );
                         }
                     }
                 }
@@ -180,11 +205,53 @@ int MyPviConnection::GetPlcDetails(std::string macAddress, std::vector<std::stri
 
 
 
+int MyPviConnection::WriteSnmpVariable( string macAddress, string name, string value )
+{
+    DWORD linkIdPvar;
+    DWORD linkIdStation;
+    string stationDescriptor = "CD=\" /CN=" + macAddress;
+    std::vector<string> vars;
+    constexpr unsigned BUFSIZE = 16384;
+    char *buffer = new char[BUFSIZE];
+
+    m_result = PviCreate( &linkIdStation, "@Pvi/LnSNMP/Device/Station", POBJ_STATION, stationDescriptor.c_str(), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
+    if( m_result == 0 )
+    {
+        string objectName = "@Pvi/LnSNMP/Device/Station/" + name;
+        string descriptor =  "CD=" + name;
+        m_result = PviCreate( &linkIdPvar, objectName.c_str(), POBJ_PVAR, descriptor.c_str(), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
+        if( m_result == 0 )
+        {
+            m_result = PviRead( linkIdPvar, POBJ_ACC_TYPE_EXTERN, NULL, 0, buffer, BUFSIZE );
+            if( m_result == 0 )
+            {
+                if( strstr(buffer, KWDESC_PVTYPE "=" KWPVTYPE_STRING) )  /* string */
+                {
+                    value.copy( buffer, value.length(), 0 );
+                    buffer[value.length()] = 0;
+                    m_result = PviWrite( linkIdPvar, POBJ_ACC_DATA, buffer, value.length(), NULL, 0 );
+                }
+                else if( strstr(buffer, KWDESC_PVTYPE "=" KWPVTYPE_INT32) )  /* int32 */
+                {
+                    int32_t i = std::stoi(value);
+                    m_result = PviWrite( linkIdPvar, POBJ_ACC_DATA, &i, sizeof(i), NULL, 0 );
+                }
+            }
+        }
+        PviUnlink(linkIdStation);
+    }
+    return m_result;
+}
+
+
 int MyPviConnection::ExecuteCommand()
 {
     DWORD linkIdSnmpLine;
     DWORD linkIdDevice;
-    std::vector<std::string> macListStations;
+    std::regex regExFilter(m_filter);
+
+    constexpr int BUFSIZE = 65536;
+    char *buffer = new char[BUFSIZE];
 
     if( m_result == 0 )
     {
@@ -192,73 +259,95 @@ int MyPviConnection::ExecuteCommand()
         m_result = PviCreate( &linkIdSnmpLine, "@Pvi/LnSNMP", POBJ_LINE, "CD=\"LNSNMP\"", PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
         if( m_result == 0 )
         {
-            m_result = PviCreate( &linkIdDevice, "@Pvi/LnSNMP/Device", POBJ_DEVICE, "CD=\"/IF=snmp /RT=3000\"", PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
+            string deviceDescriptor = "CD=\"/IF=snmp /RT=" + std::to_string(m_timeout) + "\"";
+            m_result = PviCreate( &linkIdDevice, "@Pvi/LnSNMP/Device", POBJ_DEVICE, deviceDescriptor.c_str(), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
             if( m_result == 0 )
             {
-                /* list available plc (MACs) */
-                char *buffer = new char[65536];
-                m_result = PviRead( linkIdDevice, POBJ_ACC_LIST_EXTERN, NULL, 0, buffer, 65536);
+                /* list available plc in network (MACs) */
+
+                m_result = PviRead( linkIdDevice, POBJ_ACC_LIST_EXTERN, NULL, 0, buffer, BUFSIZE);
                 if( m_result == 0 )
                 {
-
-                    const char delimiter[] = {"\t"};
-                    char * p = std::strtok ( buffer, delimiter );
-                    while (p!=0)
+                    int cnt = 0;
+                    /* start output in JSON format */
+                    if( m_listRequested || m_detailedListRequested )
                     {
-                        if( strstr(p, KWDESC_OBJTYPE "=" KWOBJTYPE_STATION) )
-                        {
-                            std::string macAddress( p, 17 );
-                            bool macFilterActive = !m_macFilter.empty();
-                            if( macFilterActive )
-                            {
-                                if( find_if( m_macFilter.begin(), m_macFilter.end(), [&]( std::string m )
-                            {
-                                return m == macAddress;
-                            } ) != m_macFilter.end() )
-                                {
-                                    macListStations.push_back(macAddress);
-                                }
-                            }
-                            else
-                            {
-                                macListStations.push_back(macAddress);
-                            }
-                        }
-                        p = std::strtok( NULL, delimiter );
-                    }
-                }
-                delete[] buffer;
-                /* list of MACs in macListStations now */
-                if( macListStations.size() > 1 && m_detailedList )
-                    m_output += "[\n";
-
-                int cnt = 0;
-                for( auto mac : macListStations )
-                {
-                    if( m_list )  /* simple list of MAC addresses */
-                    {
-                        m_output += mac;
-                        m_output += "\n";
-                    }
-                    else if( m_detailedList )  /* detailed list */
-                    {
+                        m_output += "[\n";
                         if( cnt > 0 )
                             m_output += ",";
-                        m_output += "{\n";
-                        std::vector<std::string> details;
-                        m_result = GetPlcDetails(mac, details);
-                        for( auto d : details )
-                            m_output = m_output + "  " + d + "\n";
-                        m_output += "}\n";
+
                     }
-                    ++cnt;
+
+
+                    /* extract MACs from list */
+                    std::vector<string> fields;
+                    string s(buffer);
+                    split( fields, s, "\t", false );
+                    for( string s : fields )
+                    {
+                        size_t pos;
+                        if( (pos = s.find( " " KWDESC_OBJTYPE "=" KWOBJTYPE_STATION)) != std::string::npos )
+                        {
+                            string macAddress = s.substr(0,pos);
+                            std::vector<string> details;
+                            m_result = GetPlcDetails(macAddress, details);
+                            bool outputPlc = false;
+                            if(m_filter.length() != 0)     /* apply a filter ? */
+                            {
+                                std::smatch match;
+                                for( auto d : details )
+                                {
+                                    if( std::regex_search(d,match,regExFilter) )
+                                    {
+                                        outputPlc = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else  /* no filter is set */
+                            {
+                                outputPlc = true;
+                            }
+                            if( outputPlc && (m_listRequested || m_detailedListRequested) )
+                            {
+                                if( cnt > 0 )
+                                    m_output += ",";
+                                if( m_listRequested )  /* simple list of MAC addresses */
+                                {
+                                    m_output = m_output + "\"" + macAddress + "\"\n";
+                                }
+                                else if( m_detailedListRequested )  /* detailed list */
+                                {
+                                    m_output += "{\n";
+                                    for( unsigned int n = 0; n < details.size(); ++n )
+                                    {
+                                        m_output = m_output + "  " + details.at(n) + (n == details.size()-1 ? "\n" : ",\n");
+                                    }
+                                    m_output += "}\n";
+                                }
+
+                                /* write to SNMP process variables */
+                                for( auto pv : m_processVariables )
+                                {
+                                    WriteSnmpVariable( macAddress, pv.name, pv.value );
+                                }
+                            }
+                        }
+                        ++cnt;
+                    }
                 }
-                if( macListStations.size() > 1 && m_detailedList )
+                if( m_listRequested || m_detailedListRequested )
+                {
                     m_output += "\n]\n";
+                }
                 PviUnlink(linkIdDevice);
             }
             PviUnlink(linkIdSnmpLine);
         }
     }
+
+    delete[] buffer;
     return m_result;
 }
+
+
