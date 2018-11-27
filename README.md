@@ -1,7 +1,7 @@
 # brsnmp [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 Execute PVI-SNMP commands for B&amp;R plcs
 
-## Example application
+### Example application
 Use within Runtime Utility Center *.pil file to setup a new CPU via network:
 ```
 Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
@@ -16,7 +16,7 @@ Coldstart "120"
 ```
 
 
-# Usage:
+## Usage:
 
 -h, --help                       this help
 -v, --version                    software version
@@ -26,7 +26,7 @@ Coldstart "120"
 -d, --details                    list detailed properties of available B&R plc
 --<NAME>=<VALUE>                 set parameter <NAME> to <VALUE> (see --details)
 
-## --version
+### ´--version`
 outputs the program version in JSON e.g.
 ```
 {
@@ -36,12 +36,12 @@ outputs the program version in JSON e.g.
 }
 ```
 
-## --filter
+### `--filter`
 sets a filter for the operations to be executed. The filter is applied to a --details - list.
 The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 But in most cases a simple text should be sufficient.
 
-## --list
+### `--list`
 outputs a list of MAC addresses (PLCs) as JSON array e.g.
 ```
 [
@@ -52,7 +52,7 @@ outputs a list of MAC addresses (PLCs) as JSON array e.g.
 ]
 ```
 
-## --details
+### `--details`
 outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ```
 [
@@ -91,34 +91,33 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ]
 ```
 
-## set parameter
+### `--<NAME>=<VALUE>`
 sets parameter "<NAME>" to "<VALUE>" e.g.
 ```
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
 ```
 
-
-# Disclaimer
+## Disclaimer
 brsnmp comes „as is“, e.g. without support and warranty.
 You can freely copy it but use it at your own risk.
 
-# PVI
+## PVI
 brsnmp requires PVI 4.x.
 it needs a previously installed [PVI Development Setup](https://www.br-automation.com/en/downloads/#categories=Software/Automation+NET%2FPVI) to run.
 Beware: if you do not own a PVI license **1TG0500.02** (+ TG Guard e.t. 0TG1000.02) PVI will run for two hours only. After this period brwatch will stop working and PVI-Manager must be stopped and restarted again.
 So, do not blame brsnmp for that and contact your local B&R office to buy it.
 
-# Development
-## Compiler
+## Development
+### Compiler
    Mingw32 (32-Bit)
    http://www.mingw.org/
    
-## IDE
+### IDE
    Code::Blocks
    http://www.codeblocks.org/
    
-# Dependencies
+### Dependencies
 Thanks to https://github.com/adishavit/argh for the command line parser
 
 
