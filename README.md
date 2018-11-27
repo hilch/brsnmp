@@ -105,8 +105,8 @@ You can freely copy it but use it at your own risk.
 ## PVI
 brsnmp requires PVI 4.x.
 it needs a previously installed [PVI Development Setup](https://www.br-automation.com/en/downloads/#categories=Software/Automation+NET%2FPVI) to run.
-Beware: if you do not own a PVI license **1TG0500.02** (+ TG Guard e.t. 0TG1000.02) PVI will run for two hours only. After this period brwatch will stop working and PVI-Manager must be stopped and restarted again.
-So, do not blame brsnmp for that and contact your local B&R office to buy it.
+Beware: if you do not own a PVI license **1TG0500.02** (+ TG Guard e.t. 0TG1000.02) PVI will run for two hours only. After this period brsnmp will stop working and PVI-Manager must be stopped and restarted again.
+Contact your local B&R office for a license.
 
 ## Development
 ### Compiler
