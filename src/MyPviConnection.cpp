@@ -291,7 +291,7 @@ int MyPviConnection::ExecuteCommand()
                             string macAddress = s.substr(0,pos);
                             std::vector<string> details;
                             m_result = GetPlcDetails(macAddress, details);
-                            bool outputPlc = false;
+                            bool plcFitsToFilter = false;
                             if(m_filter.length() != 0)     /* apply a filter ? */
                             {
                                 std::smatch match;
@@ -299,31 +299,34 @@ int MyPviConnection::ExecuteCommand()
                                 {
                                     if( std::regex_search(d,match,regExFilter) )
                                     {
-                                        outputPlc = true;
+                                        plcFitsToFilter = true;
                                         break;
                                     }
                                 }
                             }
                             else  /* no filter is set */
                             {
-                                outputPlc = true;
+                                plcFitsToFilter = true;
                             }
-                            if( outputPlc && (m_listRequested || m_detailedListRequested) )
+                            if( plcFitsToFilter  )
                             {
-                                if( cnt > 0 )
-                                    m_output += ",";
-                                if( m_listRequested )  /* simple list of MAC addresses */
+                                if(m_listRequested || m_detailedListRequested)
                                 {
-                                    m_output = m_output + "\"" + macAddress + "\"\n";
-                                }
-                                else if( m_detailedListRequested )  /* detailed list */
-                                {
-                                    m_output += "{\n";
-                                    for( unsigned int n = 0; n < details.size(); ++n )
+                                    if( cnt > 0 )
+                                        m_output += ",";
+                                    if( m_listRequested )  /* simple list of MAC addresses */
                                     {
-                                        m_output = m_output + "  " + details.at(n) + (n == details.size()-1 ? "\n" : ",\n");
+                                        m_output = m_output + "\"" + macAddress + "\"\n";
                                     }
-                                    m_output += "}\n";
+                                    else if( m_detailedListRequested )  /* detailed list */
+                                    {
+                                        m_output += "{\n";
+                                        for( unsigned int n = 0; n < details.size(); ++n )
+                                        {
+                                            m_output = m_output + "  " + details.at(n) + (n == details.size()-1 ? "\n" : ",\n");
+                                        }
+                                        m_output += "}\n";
+                                    }
                                 }
 
                                 /* write to SNMP process variables */

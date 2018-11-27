@@ -1,6 +1,21 @@
 # brsnmp [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 Execute PVI-SNMP commands for B&amp;R plcs
 
+## Example application
+Use within Runtime Utility Center *.pil file to setup a new CPU via network:
+```
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
+Download ".\PPC7xG43.s14", "ROM", "MN=PPC7xG43 MV=1.0"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
+OnErrorResume
+Transfer ".\RucPackage_Config2.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
+ClearError
+Coldstart "120"
+```
+
+
 # Usage:
 
 -h, --help                       this help

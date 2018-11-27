@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="mingw32" />
-				<Option parameters="-f=X20CP1583 --ipAddress=192.168.0.14 --subnetMask=255.255.255.0" />
+				<Option parameters="-f=4PPC30 --ipAddress=192.168.0.14 --subnetMask=255.255.255.0" />
 				<Compiler>
 					<Add option="-std=c++14" />
 					<Add option="-g" />
