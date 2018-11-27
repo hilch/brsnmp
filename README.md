@@ -22,7 +22,9 @@ outputs the program version in JSON e.g.
 ```
 
 ## --filter
-sets a filter for the operations to be executed. The filter is applied to a --details - list
+sets a filter for the operations to be executed. The filter is applied to a --details - list.
+The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+But in most cases a simple text should be sufficient.
 
 ## --list
 outputs a list of MAC addresses (PLCs) as JSON array e.g.
@@ -80,6 +82,7 @@ sets parameter "<NAME>" to "<VALUE>" e.g.
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
 ```
+
 
 # Disclaimer
 brsnmp comes „as is“, e.g. without support and warranty.
