@@ -15,7 +15,6 @@ ClearError
 Coldstart "120"
 ```
 
-
 ## Usage:
 ```
 -h, --help                       this help
@@ -27,7 +26,7 @@ Coldstart "120"
 --<NAME>=<VALUE>                 set parameter <NAME> to <VALUE> (see --details)
 ```
 
-### ´--version`
+### `--version`
 outputs the program version in JSON e.g.
 ```
 {
