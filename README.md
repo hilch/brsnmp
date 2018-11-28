@@ -2,7 +2,7 @@
 Execute PVI-SNMP commands for B&amp;R plcs
 
 ### Example application
-Use within Runtime Utility Center *.pil file to setup a new CPU via network:
+Use within Runtime Utility Center *.pil file to setup a new CPU in BOOT state via network:
 ```
 Remark "plc is new or has flash with 1 partition only"
 Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
