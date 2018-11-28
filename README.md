@@ -38,12 +38,12 @@ outputs the program version in JSON e.g.
 ```
 
 ### `--filter`
-sets a filter for the operations to be executed. The filter is applied to a --details - list.
+sets a filter for the operations to be executed (highly recommended if you plan to set the ip settings ;-) ). The filter is applied to a --details - output.
 The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 But in most cases a simple text should be sufficient.
 
 ### `--list`
-outputs a list of MAC addresses (PLCs) as JSON array e.g.
+outputs a list of MAC of reachable PLCs as JSON array e.g.
 ```
 [
 "00-60-65-16-fd-da"
