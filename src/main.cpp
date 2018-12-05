@@ -37,7 +37,7 @@ int main(int argc, char* argv[] )
     }
     if (cmdl[ { "-v","--version" }] )
     {
-        std::cout << "{\n\"brsnmp\":\"0.1\",\n";
+        std::cout << "{\n\"brsnmp\":\"0.2\",\n";
         std::cout << "\"build-time\":\"" << __TIME__ << "\",\n";
         std::cout << "\"build-date\":\"" << __DATE__ << "\"\n}\n";
         return 0;
