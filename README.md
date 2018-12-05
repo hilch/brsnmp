@@ -91,6 +91,10 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 }
 ]
 ```
+meanings:
+![SNMPVariables](https://github.com/hilch/brsnmp/blob/master/doc/SnmpVariables.PNG)
+
+
 
 ### `--<NAME>=<VALUE>`
 sets parameter `<NAME>` to `<VALUE>` e.g.
