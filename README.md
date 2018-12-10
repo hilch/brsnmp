@@ -56,7 +56,7 @@ set filter to AR-Version I4.3.4  (regular expression)
 set filter to given MAC address (regular expression)
 
 ```--filter=X20CP3585```
-set filter for X20CP3585. (simple filter, no regex. 'X20CP3585' may not be used as hostname in this case)
+set filter for X20CP3585. (simple filter, no regex. 'X20CP3585' must not have be used as hostname in this case)
 
 
 ### `--list`
