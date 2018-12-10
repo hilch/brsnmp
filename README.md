@@ -1,9 +1,14 @@
+
 # brsnmp [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 Execute PVI-SNMP commands for B&amp;R plcs
 
-### Example application
+## Example application
+
 Use within Runtime Utility Center *.pil file to setup a new CPU in BOOT state via network:
-```
+
+```batch
+
 Remark "plc is new or has flash with 1 partition only"
 Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
 Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
@@ -15,13 +20,15 @@ Remark "transfer 'real' project with SAFE file system"
 Transfer ".\RucPackage_Config2.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
 Coldstart "120"
 ```
+
 **FAQ**: where can I download PPC7xG43.s14 ?
 
 **Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` or just execute menu command 'Project/Export To Runtime Utility Center' and extract the *.zip file, look inside folder 'AR'.
 
+## Usage
 
-## Usage:
-```
+```batch
+
 -h, --help                       this help
 -v, --version                    software version
 -f=<EXPR>, --filter=<EXPR>       Filter(regular expression following ECMA syntax)
@@ -32,6 +39,7 @@ Coldstart "120"
 ```
 
 ### `--version`
+
 outputs the program version in JSON e.g.
 ```
 {
@@ -42,6 +50,7 @@ outputs the program version in JSON e.g.
 ```
 
 ### `--filter`
+
 sets a filter for the operations to be executed (highly recommended if you plan to set the ip settings :grimacing: ). The filter is applied to a --details - output.
 The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 But in most cases a simple text should be sufficient.
@@ -64,8 +73,9 @@ sets filter for X20CP3585. *(simple filter, no regex. 'X20CP3585' must not have 
 
 
 ### `--list`
+
 outputs a list of MAC of reachable PLCs as JSON array e.g.
-```
+```json
 [
 "00-60-65-16-fd-da"
 ,"00-60-65-23-bd-1a"
@@ -75,8 +85,9 @@ outputs a list of MAC of reachable PLCs as JSON array e.g.
 ```
 
 ### `--details`
+
 outputs a detailed list of reachable PLCs as JSON array of objects e.g.
-```
+```json
 [
 {
   "targetTypeDescription":"X20CP1583",
@@ -112,6 +123,7 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 }
 ]
 ```
+
 meanings:
 ![SNMPVariables](https://github.com/hilch/brsnmp/blob/master/doc/SnmpVariables.PNG)
 
@@ -121,39 +133,56 @@ meanings:
 **Answer**: ```brsnmp --details > details.json```
 
 ### `--<NAME>=<VALUE>`
+
 sets parameter `<NAME>` to `<VALUE>` e.g.
-```
+
+```batch
+
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
 ```
-*(only parameters which are declared RW can be written. see description of --details)*
 
+(only parameters which are declared RW can be written. see description of --details)
 
 ## Disclaimer
+
 brsnmp comes „as is“, e.g. without support and warranty.
 You can freely copy it but use it at your own risk.
 
 ## PVI
+
 brsnmp requires PVI 4.x.
 it needs a previously installed [PVI Development Setup](https://www.br-automation.com/en/downloads/#categories=Software/Automation+NET%2FPVI) to run.
 Beware: if you do not own a PVI license **1TG0500.02** (+ TG Guard e.t. 0TG1000.02) PVI will run for two hours only. After this period brsnmp will stop working and PVI-Manager must be stopped and restarted again.
 Contact your local B&R office for a license.
 
 If using brsnmp with Runtime Utility Center
-```StartPviMan "LoadLocal"```   at the beginning of *.pil and
-```StopPviMan```  at the end of *.pil is recommended.
 
+```batch
+
+StartPviMan "LoadLocal"
+
+```
+
+at the beginning of *.pil and
+
+```batch
+
+StopPviMan
+```  
+
+at the end of *.pil is recommended.
 
 ## Development
+
 ### Compiler
-   Mingw32 (32-Bit)
-   http://www.mingw.org/
-   
+
+[Mingw32 (32-Bit)](http://www.mingw.org/)
+
 ### IDE
-   Code::Blocks
-   http://www.codeblocks.org/
-   
+
+[Code::Blocks](http://www.codeblocks.org/)
+
 ### Dependencies
+
 Thanks to https://github.com/adishavit/argh for the command line parser
-
-
