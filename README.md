@@ -126,6 +126,8 @@ sets parameter `<NAME>` to `<VALUE>` e.g.
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
 ```
+*(only parameters which are declared RW can be written. see description of --details)*
+
 
 ## Disclaimer
 brsnmp comes „as is“, e.g. without support and warranty.
