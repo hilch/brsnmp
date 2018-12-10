@@ -47,16 +47,20 @@ The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs
 But in most cases a simple text should be sufficient.
 
 ```--filter=targetTypeDescription.+X20CP\d{4}```
-set filter to all X20-CPUs (regular expression)
+
+sets filter to all X20-CPUs *(regular expression)*
 
 ```--filter=arVersion.+I.4\.34```
-set filter to AR-Version I4.3.4  (regular expression) 
+
+sets filter to AR-Version I4.3.4  *(regular expression)*
 
 ```--filter=macAddress.+00-60-65-3a-39-10```
-set filter to given MAC address (regular expression)
+
+sets filter to given MAC address *(regular expression)*
 
 ```--filter=X20CP3585```
-set filter for X20CP3585. (simple filter, no regex. 'X20CP3585' must not have be used as hostname in this case)
+
+sets filter for X20CP3585. *(simple filter, no regex. 'X20CP3585' must not have be used as hostname in this case)*
 
 
 ### `--list`
