@@ -116,6 +116,9 @@ meanings:
 ![SNMPVariables](https://github.com/hilch/brsnmp/blob/master/doc/SnmpVariables.PNG)
 
 
+**FAQ**: how can I store this list ?
+
+**Answer**: ```brsnmp --details > details.json```
 
 ### `--<NAME>=<VALUE>`
 sets parameter `<NAME>` to `<VALUE>` e.g.
