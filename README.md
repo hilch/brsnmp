@@ -139,6 +139,11 @@ it needs a previously installed [PVI Development Setup](https://www.br-automatio
 Beware: if you do not own a PVI license **1TG0500.02** (+ TG Guard e.t. 0TG1000.02) PVI will run for two hours only. After this period brsnmp will stop working and PVI-Manager must be stopped and restarted again.
 Contact your local B&R office for a license.
 
+If using brsnmp with Runtime Utility Center
+```StartPviMan "LoadLocal"```   at the beginning of *.pil and
+```StopPviMan```  at the end of *.pil is recommended.
+
+
 ## Development
 ### Compiler
    Mingw32 (32-Bit)
