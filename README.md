@@ -46,6 +46,19 @@ sets a filter for the operations to be executed (highly recommended if you plan 
 The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
 But in most cases a simple text should be sufficient.
 
+```--filter=targetTypeDescription.+X20CP\d{4}```
+set filter to all X20-CPUs (regular expression)
+
+```--filter=arVersion.+I.4\.34```
+set filter to AR-Version I4.3.4  (regular expression) 
+
+```--filter=macAddress.+00-60-65-3a-39-10```
+set filter to given MAC address (regular expression)
+
+```--filter=X20CP3585```
+set filter for X20CP3585. (simple filter, no regex. 'X20CP3585' may not be used as hostname in this case)
+
+
 ### `--list`
 outputs a list of MAC of reachable PLCs as JSON array e.g.
 ```
