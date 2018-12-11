@@ -9,16 +9,37 @@ Use within Runtime Utility Center *.pil file to setup a new CPU in BOOT state vi
 
 ```batch
 
-Remark "plc is new or has flash with 1 partition only"
-Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
-Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
-Download ".\PPC7xG43.s14", "ROM", "MN=PPC7xG43 MV=1.0"
-Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
-Remark "increase /RT due to re-partitioning"
-Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=10000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
+Remark "remote install 4PPC70 via network (project installation AR > 4.2.5"
+StartPviMan "LoadLocal"
+Remark "Create Partition"
+Call "brsnmp.exe", "--ipMethod=0 --filter=PPC7", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=PPC7", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=30000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+CFCreatePart "HD0", "1", "100, 'SYSTEM'"
+CFFormatPart "HD0", "C", "SYSTEM"
+Warmstart "60"
+ClearError
+OnErrorBreak
+
+Remark "transfer AR with system modules included"
+Call "brsnmp.exe", "--ipMethod=0 --filter=PPC7", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=PPC7", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=30000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+ARUpdateFileGenerate ".\PPC7xG43.s14", ".\arupdate.br", "arconfig.br | asfw.br | ashwd.br | sysconf.br"
+Download "arupdate.br", "ROM"
+Warmstart "120"
+Remark "We've only one partition here"
+
+
 Remark "transfer 'real' project with SAFE file system"
-Transfer ".\RucPackage_Config2.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
-Coldstart "120"
+Transfer ".\RucPackage_Config1.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
+Remark "Reboot and wait for Repartitioning"
+Coldstart "180"
+Remark "We've three ore four partitions now"
+
+
+StopPviMan
+
 ```
 
 **FAQ**: where can I download PPC7xG43.s14 ?
