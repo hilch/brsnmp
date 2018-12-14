@@ -37,7 +37,7 @@ outputs the program version in JSON e.g.
 ### `--filter`
 
 sets a filter for the operations to be executed (highly recommended if you plan to set the ip settings :grimacing: ). The filter is applied to a --details - output.
-The filter is a ECMA Regual Expression (https://regex101.com/#javascript).
+The filter is an ECMA Regual Expression (https://regex101.com/#javascript).
 But in most cases a simple text should be sufficient.
 
 ```--filter=targetTypeDescription.+X20CP\d{4}```
