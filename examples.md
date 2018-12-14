@@ -71,9 +71,19 @@ StopPviMan
 
  - where can I download PPC7xG43.s14, X20CP1301G41.s1 ?
 
-**Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` or just execute menu command 'Project/Export To Runtime Utility Center' and extract the *.zip file, look inside folder 'AR'.
+**Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` 
 
 e.g. :
 
 ![S_Files](https://github.com/hilch/brsnmp/blob/master/doc/S_Files.PNG)
+
+or just execute menu command 'Project/Export To Runtime Utility Center' (>= AS 4.3) and extract the *.zip file, look inside folder 'AR',
+
+e.g. :
+
+![S_Files_B1](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B1.PNG)
+
+![S_Files_B2](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B2.PNG)
+
+![S_Files_B3](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B3.PNG)
 
