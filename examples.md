@@ -1,10 +1,10 @@
 ## Example 1
 
-Setup a 4PPC70 with AR G4.3.4 e.g. with 'project installation'
+Setup a 4PPC70 with AR G4.3.4 e.g. with 'Project Installation' (used if AR > 4.25)
 
 ```batch
 
-Remark "remote install 4PPC70 via network (project installation AR > 4.2.5"
+Remark "remote install 4PPC70 via network (Project installation AR > 4.2.5)"
 StartPviMan "LoadLocal"
 Remark "Create Partition"
 Call "brsnmp.exe", "--ipMethod=0 --filter=PPC7", "HideWindow=1"
@@ -39,7 +39,7 @@ StopPviMan
 
 ## Example 2
 
-Setup a X20CP1301 with AR G4.10 e.g. with "Transfer"
+Setup a X20CP1301 with AR G4.10 e.g. with "Transfer" (used if AR < 4.25)
 
 ```
 Remark "remote install X20CP1301 via network (transfer AR < 4.2.5)"
