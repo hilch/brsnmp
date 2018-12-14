@@ -37,6 +37,36 @@ StopPviMan
 
 ```
 
-**FAQ**: where can I download PPC7xG43.s14 ?
+## Example 2
+
+Setup a X20CP1301 with AR G4.10 e.g. with "Transfer"
+
+```
+Remark "remote install X20CP1301 via network (transfer AR < 4.2.5)"
+StartPviMan "LoadLocal"
+OnErrorBreak
+Call "brsnmp.exe", "--ipMethod=0 --filter=X20CP1301", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.7 --subnet=255.255.255.0 --filter=X20CP1301", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=99", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.7 /REPO=11159 /ANSL=1 /PT=11169"
+Remark "we use the SAFE file system"
+CFCreatePart "HD0", "4", "10, 'SYSTEM'", "20, 'DATA1'", "20, 'DATA2'", "50, 'USER'"
+CFFormatPart "HD0", "C", "SYSTEM"
+Warmstart "80"
+ClearError
+
+Remark "transfer AR with system modules included"
+Call "brsnmp.exe", "--ipMethod=0 --filter=X20CP1301", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.7 --subnetMask=255.255.255.0 --filter=X20CP1301", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=30000 /AM=* /SDT=5 /DAIP=192.168.0.7 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+ARUpdateFileGenerate ".\X20CP1301G41.s1", ".\arupdate.br", "arconfig.br | asfw.br | ashwd.br | sysconf.br"
+Download "arupdate.br", "ROM"
+Warmstart "180"
+Remark "CPU is in RUN -> can download the project now"
+
+StopPviMan
+
+```
+
+**FAQ**: where can I download PPC7xG43.s14, X20CP1301G41.s1 ?
 
 **Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` or just execute menu command 'Project/Export To Runtime Utility Center' and extract the *.zip file, look inside folder 'AR'.
