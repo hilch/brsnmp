@@ -1,29 +1,14 @@
 
-# brsnmp [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+# brsnmp 
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Execute PVI-SNMP commands for B&amp;R plcs
 
 ## Example application
 
-Use within Runtime Utility Center *.pil file to setup a new CPU in BOOT state via network:
+Use within Runtime Utility Center *.pil file to setup a new CPU in BOOT state via network
 
-```batch
-
-Remark "plc is new or has flash with 1 partition only"
-Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
-Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
-Download ".\PPC7xG43.s14", "ROM", "MN=PPC7xG43 MV=1.0"
-Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --ipMethod=0 --filter=PPC7", "HideWindow=1"
-Remark "increase /RT due to re-partitioning"
-Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=10000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
-Remark "transfer 'real' project with SAFE file system"
-Transfer ".\RucPackage_Config2.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
-Coldstart "120"
-```
-
-**FAQ**: where can I download PPC7xG43.s14 ?
-
-**Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` or just execute menu command 'Project/Export To Runtime Utility Center' and extract the *.zip file, look inside folder 'AR'.
+see [Examples](https://github.com/hilch/brsnmp/blob/master/examples.md)
 
 ## Usage
 
@@ -52,7 +37,7 @@ outputs the program version in JSON e.g.
 ### `--filter`
 
 sets a filter for the operations to be executed (highly recommended if you plan to set the ip settings :grimacing: ). The filter is applied to a --details - output.
-The filter is a ECMA Regual Expression (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions).
+The filter is an ECMA Regual Expression (https://regex101.com/#javascript).
 But in most cases a simple text should be sufficient.
 
 ```--filter=targetTypeDescription.+X20CP\d{4}```
