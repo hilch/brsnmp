@@ -37,11 +37,16 @@ private:
     int ExecuteCommand(void);
     int GetPlcDetails( std::string macAddress, std::vector<std::string> &details );
     int WriteSnmpVariable( std::string macAddress, std::string name, std::string value);
+    int SaveLastFilterResults(void);
+    std::string LoadLastFilterResults(void);
     std::vector<ProcessVariable> m_processVariables;
     std::string m_output;
     std::string m_filter;
     bool m_listRequested, m_detailedListRequested;
     int m_timeout;
+    std::string m_lastFilterResult;
+    std::string m_lastFilterResultFileName;
+    bool m_saveLastFilter;
     int m_result;
 
 };

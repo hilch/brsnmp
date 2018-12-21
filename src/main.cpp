@@ -10,11 +10,8 @@ string help(void);
 
 int main(int argc, char* argv[] )
 {
-   // argh::parser cmdl({ "-h","--help", "-v","--version", "-l", "--list", "-v", "--verbose", "-f", "--filter", "-t", "--timeout",
 
-                    //});
-                    argh::parser cmdl(argv);
-    //cmdl.parse(argc,argv);
+  argh::parser cmdl(argv);
 
 #ifdef _DEBUG
     cout << "Positional args:\n";
@@ -37,7 +34,7 @@ int main(int argc, char* argv[] )
     }
     if (cmdl[ { "-v","--version" }] )
     {
-        std::cout << "{\n\"brsnmp\":\"0.2\",\n";
+        std::cout << "{\n\"brsnmp\":\"1.0\",\n";
         std::cout << "\"build-time\":\"" << __TIME__ << "\",\n";
         std::cout << "\"build-date\":\"" << __DATE__ << "\"\n}\n";
         return 0;

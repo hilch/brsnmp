@@ -1,9 +1,9 @@
-#ifdef _DEBUG
 #include <iostream>
-#endif // _DEBUG
 #include <algorithm>
 #include <array>
 #include <regex>
+#include <fstream>
+
 #include "MyPviConnection.h"
 #include "PviCom.h"
 #include "stringsplit.h"
@@ -12,7 +12,8 @@ using std::string;
 
 MyPviConnection*  MyPviConnection::m_instance = nullptr;
 
-MyPviConnection::MyPviConnection() : m_listRequested{false}, m_detailedListRequested{false}, m_timeout(3000)
+MyPviConnection::MyPviConnection() : m_listRequested{false}, m_detailedListRequested{false}, m_timeout(3000),
+                                    m_lastFilterResult{""}, m_saveLastFilter{true}
 {
     m_result = PviInitialize( 0, 0, "", NULL );
 #ifdef _DEBUG
@@ -27,6 +28,11 @@ MyPviConnection::MyPviConnection() : m_listRequested{false}, m_detailedListReque
         if( m_result == 0 )
             m_result = PviSetGlobEventMsg( POBJ_EVENT_PVI_ARRANGE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 );
     }
+    char* buffer = new char[MAX_PATH+1];
+    size_t length = GetTempPath( MAX_PATH+1, buffer );
+    m_lastFilterResultFileName.append( buffer, length );
+    delete[] buffer;
+    m_lastFilterResultFileName += "brsnmplastfilter.txt";
 }
 
 MyPviConnection::~MyPviConnection()
@@ -44,9 +50,52 @@ MyPviConnection& MyPviConnection::getInstance()
 
 int MyPviConnection::SetFilter(string filterRegEx )
 {
-    m_filter = filterRegEx;
+    string f = filterRegEx;
+    std::transform( f.begin(), f.end(), f.begin(), ::toupper );
+
+    if( f == "$LAST")
+    {
+        m_filter = LoadLastFilterResults();
+        if( m_filter.length() == 0 )
+        {
+            std::cerr << "no last filter available" << std::endl;
+            return -1;
+        }
+        m_saveLastFilter = false; /* do not refresh the last filter */
+    }
+    else
+    {
+        m_filter = filterRegEx;
+    }
     return 0;
 }
+
+
+int MyPviConnection::SaveLastFilterResults(void)
+{
+  std::ofstream ofs;
+  ofs.open ( m_lastFilterResultFileName, std::ofstream::out );
+  ofs << m_lastFilterResult;
+  ofs.close();
+  if( ofs.bad() )
+  {
+    std::cerr << "Error saving last filter" << std::endl;
+    return -1;
+  }
+  return 0;
+}
+
+string MyPviConnection::LoadLastFilterResults(void)
+{
+    std::ifstream ifs;
+    string result;
+
+    ifs.open (m_lastFilterResultFileName, std::ifstream::in );
+    ifs >> result;
+    ifs.close();
+    return result;
+}
+
 
 int MyPviConnection::SetTimeout(int timeout )
 {
@@ -88,6 +137,8 @@ string &MyPviConnection::operator()()
         m_listRequested = false;
 
     ExecuteCommand();
+    if( m_saveLastFilter )
+        m_result = SaveLastFilterResults();
     return(m_output);
 }
 
@@ -310,6 +361,10 @@ int MyPviConnection::ExecuteCommand()
                             }
                             if( plcFitsToFilter  )
                             {
+                                if( cnt > 0 )
+                                    m_lastFilterResult += "|";
+                                m_lastFilterResult += macAddress;
+
                                 if(m_listRequested || m_detailedListRequested)
                                 {
                                     if( cnt > 0 )
@@ -328,15 +383,14 @@ int MyPviConnection::ExecuteCommand()
                                         m_output += "}\n";
                                     }
                                 }
-
                                 /* write to SNMP process variables */
                                 for( auto pv : m_processVariables )
                                 {
                                     WriteSnmpVariable( macAddress, pv.name, pv.value );
                                 }
+                                ++cnt;
                             }
                         }
-                        ++cnt;
                     }
                 }
                 if( m_listRequested || m_detailedListRequested )
