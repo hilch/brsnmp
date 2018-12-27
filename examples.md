@@ -39,9 +39,62 @@ StopPviMan
 
 ## Example 2
 
-Setup a X20CP1301 with AR G4.10 e.g. with "Transfer" (used if AR < 4.25)
+In some cases we do not find satisfactory filter settings e.g. many identical cpu types in network,
+identical node settings, unknown MAC addresses or serial numbers ...
+If a connection  to the targeted cpu is already available we can use the current IP address if
+we use the $LAST expression for filtering:
+
+```batch
+
+Remark "remote install 4PPC70 via network (Project installation AR > 4.2.5)"
+Remark "PLC is already reachable via IP address and we use brsnmp >= V1.0"
+Remark "With --filter=$LAST the MAC is stored across all calls of brsnmp"
+
+StartPviMan "LoadLocal"
+OnErrorBreak
+
+Remark "Test if a cpu is reachable"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=1000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+
+Remark "Create Partition"
+Call "brsnmp.exe", "--ipMethod=0 --filter=192.168.0.14", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=30000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+CFCreatePart "HD0", "1", "100, 'SYSTEM'"
+CFFormatPart "HD0", "C", "SYSTEM"
+Warmstart "60"
+ClearError
+OnErrorBreak
+
+Remark "transfer AR with system modules included"
+Call "brsnmp.exe", "--ipMethod=0 --filter=$LAST", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=30000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+ARUpdateFileGenerate ".\PPC7xG43.s14", ".\arupdate.br", "arconfig.br | asfw.br | ashwd.br | sysconf.br"
+Download "arupdate.br", "ROM"
+Warmstart "120"
+Remark "We've only one partition here"
+
+
+Remark "transfer 'real' project with SAFE file system"
+Transfer ".\RucPackage_Config1.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
+Remark "Reboot and wait for Repartitioning"
+Coldstart "180"
+Remark "We've three ore four partitions now"
+
+Remark "delete last filter settings"
+Call "brsnmp.exe", "--filter= --timeout=50", "HideWindow=1"
+
+StopPviMan
 
 ```
+
+## Example 3
+
+Setup a X20CP1301 with AR G4.10 e.g. with "Transfer" (used if AR < 4.25)
+
+```batch
+
 Remark "remote install X20CP1301 via network (transfer AR < 4.2.5)"
 StartPviMan "LoadLocal"
 OnErrorBreak

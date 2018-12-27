@@ -44,8 +44,7 @@ int main(int argc, char* argv[] )
 
     /* set filter */
     string filter = cmdl({"-f", "--filter"}).str();
-    if( filter.length() )
-        con.SetFilter(filter);
+    con.SetFilter(filter);
 
     /* set communication timeout */
     unsigned int timeout = 0;
@@ -92,7 +91,7 @@ string help()
         "-h, --help                       this help\n"
         "-v, --version                    software version\n"
         "-f=<EXPR>, --filter=<EXPR>       Filter(regular expression following ECMA syntax)\n"
-        "-t=<MS>, --timeout=<MS>          SNMP Line Timeout [ms], default: <3000>\n"
+        "-t=<MS>, --timeout=<MS>          SNMP Line Timeout [ms], default: <3000> min:<50> max:<10000>\n"
         "-l, --list                       list MAC addresses of available B&R plc\n"
         "-d, --details                    list detailed properties of available B&R plc\n"
         "--<NAME>=<VALUE>                 set parameter <NAME> to <VALUE> (see --details)\n"

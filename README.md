@@ -56,6 +56,18 @@ sets filter to given MAC address *(regular expression)*
 
 sets filter for X20CP3585. *(simple filter, no regex. 'X20CP3585' must not have be used as hostname in this case)*
 
+```--filter=@LAST```
+sets filter to the expression from previous call (V1.0++)
+(all filter expressions are stored in TEMP directory)
+
+```--filter=```
+
+clears previous filter settings and sets filter to 'all' (V1.0++)
+
+```--filter=.*```
+
+sets filter to 'all'. (As this expression is default, it can be omitted.)
+
 
 ### `--list`
 
@@ -109,7 +121,7 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ]
 ```
 
-meanings:
+possible values and their meanings:
 ![SNMPVariables](https://github.com/hilch/brsnmp/blob/master/doc/SnmpVariables.PNG)
 
 
@@ -125,7 +137,16 @@ sets parameter `<NAME>` to `<VALUE>` e.g.
 
 ipAddress=192.168.0.14
 subnetMask=255.255.255.0
+
 ```
+if <VALUE> is surrounded by '%' character an environment variable is used e.g.
+
+```batch
+
+ipAddress=%IP_ADDRESS%
+
+```
+
 
 (only parameters which are declared RW can be written. see description of --details)
 

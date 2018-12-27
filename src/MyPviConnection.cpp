@@ -3,6 +3,7 @@
 #include <array>
 #include <regex>
 #include <fstream>
+#include <cstdio>
 
 #include "MyPviConnection.h"
 #include "PviCom.h"
@@ -12,7 +13,7 @@ using std::string;
 
 MyPviConnection*  MyPviConnection::m_instance = nullptr;
 
-MyPviConnection::MyPviConnection() : m_listRequested{false}, m_detailedListRequested{false}, m_timeout(3000),
+MyPviConnection::MyPviConnection() : m_filter{".*"}, m_listRequested{false}, m_detailedListRequested{false}, m_timeout(3000),
                                     m_lastFilterResult{""}, m_saveLastFilter{true}
 {
     m_result = PviInitialize( 0, 0, "", NULL );
@@ -63,6 +64,11 @@ int MyPviConnection::SetFilter(string filterRegEx )
         }
         m_saveLastFilter = false; /* do not refresh the last filter */
     }
+    else if( filterRegEx.length() == 0 )  /* empty filter expression applied */
+    {
+       std::remove(m_lastFilterResultFileName.c_str());
+       m_saveLastFilter = false; /* do not refresh the last filter */
+    }
     else
     {
         m_filter = filterRegEx;
@@ -100,8 +106,8 @@ string MyPviConnection::LoadLastFilterResults(void)
 int MyPviConnection::SetTimeout(int timeout )
 {
     m_timeout = timeout;
-    if( m_timeout < 500 )
-        m_timeout = 500;
+    if( m_timeout < 50 )
+        m_timeout = 50;
     if( m_timeout > 10000 )
         m_timeout = 10000;
     return 0;
@@ -265,6 +271,27 @@ int MyPviConnection::WriteSnmpVariable( string macAddress, string name, string v
     constexpr unsigned BUFSIZE = 16384;
     char *buffer = new char[BUFSIZE];
 
+
+    std::regex regExEnvVariable( R"(%(\w.*)%)" );
+    std::smatch sm;
+    std::regex_match(value, sm, regExEnvVariable);
+
+    if( sm.size() == 2 )  /* an environment variable was given as value */
+    {
+       string envVariableName = sm[1];
+       if( GetEnvironmentVariable( envVariableName.c_str(), buffer, BUFSIZE) )
+       {
+           value.assign(buffer);  /* use content of environment variable */
+       }
+       else
+       {
+           m_result = -1;
+           std::cerr << "environment variable not found: \"" << value << "\" !\n";
+           return -1;
+       }
+    }
+
+
     m_result = PviCreate( &linkIdStation, "@Pvi/LnSNMP/Device/Station", POBJ_STATION, stationDescriptor.c_str(), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "" );
     if( m_result == 0 )
     {
@@ -291,6 +318,7 @@ int MyPviConnection::WriteSnmpVariable( string macAddress, string name, string v
         }
         PviUnlink(linkIdStation);
     }
+    delete[] buffer;
     return m_result;
 }
 
@@ -299,7 +327,7 @@ int MyPviConnection::ExecuteCommand()
 {
     DWORD linkIdSnmpLine;
     DWORD linkIdDevice;
-    std::regex regExFilter(m_filter);
+
 
     constexpr int BUFSIZE = 65536;
     char *buffer = new char[BUFSIZE];
@@ -345,6 +373,18 @@ int MyPviConnection::ExecuteCommand()
                             bool plcFitsToFilter = false;
                             if(m_filter.length() != 0)     /* apply a filter ? */
                             {
+                                std::regex regExFilter;
+                                try
+                                {
+                                    regExFilter.assign(m_filter);
+                                }
+                                catch (std::regex_error& e )
+                                {
+                                    std::cerr << "illegal filter applied ! (";
+                                    std::cerr << e.what() << ")";
+                                    m_result = -1;
+                                    return -1;
+                                }
                                 std::smatch match;
                                 for( auto d : details )
                                 {
@@ -354,10 +394,6 @@ int MyPviConnection::ExecuteCommand()
                                         break;
                                     }
                                 }
-                            }
-                            else  /* no filter is set */
-                            {
-                                plcFitsToFilter = true;
                             }
                             if( plcFitsToFilter  )
                             {
@@ -395,7 +431,7 @@ int MyPviConnection::ExecuteCommand()
                 }
                 if( m_listRequested || m_detailedListRequested )
                 {
-                    m_output += "\n]\n";
+                    m_output += "]\n";
                 }
                 PviUnlink(linkIdDevice);
             }
