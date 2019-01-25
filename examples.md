@@ -39,7 +39,7 @@ StopPviMan
 
 ## Example 2
 
-In some cases we do not find satisfactory filter settings e.g. many identical cpu types in network,
+In some cases we do not find satisfactory filter settings e.g. when many identical cpu types are connected to the same network,
 identical node settings, unknown MAC addresses or serial numbers ...
 If a connection  to the targeted cpu is already available we can use the current IP address if
 we use the $LAST expression for filtering:
