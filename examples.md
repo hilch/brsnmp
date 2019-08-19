@@ -201,7 +201,7 @@ StopPviMan
 
 ## FAQs
 
- - where can I download PPC7xG43.s14, X20CP1301G41.s1 ?
+a) what are the *.s* files (PPC7xG43.s14, X20CP1301G41.s1) and where can I download them ?
 
 **Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` 
 
@@ -218,4 +218,8 @@ e.g. :
 ![S_Files_B2](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B2.PNG)
 
 ![S_Files_B3](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B3.PNG)
+
+b) why did you put '--timeout=5000' in combination with '--ipMethod=0' ?
+
+**Answer**: it seems that some plc need some more time when switching to manual ip address. If anybody has some more information your help will be welcome.
 
