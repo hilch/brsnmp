@@ -1,6 +1,6 @@
 ## Example 1
 
-Setup a 4PPC70 with AR G4.3.4 e.g. with 'Project Installation' (used if AR > 4.25)
+Set up a 4PPC70 with AR G4.3.4 e.g. with 'Project Installation' (used if AR > 4.25)
 
 ```batch
 
@@ -91,7 +91,7 @@ StopPviMan
 
 ## Example 3
 
-Setup a X20CP1301 with AR G4.10 e.g. with "Transfer" (used if AR < 4.25)
+Set up a X20CP1301 with AR G4.10 e.g. with "Transfer" (used if AR < 4.25)
 
 ```batch
 
@@ -243,7 +243,12 @@ StopPviMan
 
 ## FAQs
 
-* * a) what are the *.s* files (PPC7xG43.s14, X20CP1301G41.s1) and where can I download them ? * *
+*a) brsnmp does'nt work...*
+
+**Answer**: there are a lot of pitfalls using brsnmp in Batch- files or PIL- lists as it gives no valueable return values at the moment. E.g. an invalid '--filter=xxx' will return an empty list '[]' but that's not an failure per se. Please consider to test your settings on commandline via a 'DOS'- box (cmd.exe) instead.
+
+
+*b) what are the *.s* files (PPC7xG43.s14, X20CP1301G41.s1) and where can I download them ?*
 
 **Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` 
 
@@ -261,10 +266,13 @@ e.g. :
 
 ![S_Files_B3](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B3.PNG)
 
-* *b) why did you put '--timeout=5000' in combination with '--ipMethod=0' ?* *
+*c) why did you put '--timeout=5000' in combination with '--ipMethod=0' ?*
 
 **Answer**: it seems that some plc need some more time when switching to manual ip address. If anybody has some more information your help will be welcome.
 
-* *c) brsnmp does'nt work...
+*d) I don't like to install PVI on the target computer*
 
-**Answer**: there are a lot of pitfalls using brsnmp in Batch- files or PIL- lists as it gives no valueable return values at the moment. E.g. an invalid '--filter=xxx' will return an empty list '[]' but that's not an failure itself. Please consider to test your settings on commandline via a 'DOS'- box (cmd.exe) instead.
+**Answer**: Execute Automation Studio/ Project/ Export to RUC and you will get a .zip and a transfer.pil.
+Create a tempory directory on your harddisk.
+After that start Runtime Utility Center and execute 'Create installation package' and use the above transfer.pil as source and the directory above as target. RUC will copy all necessary PVI files to this directory.
+
