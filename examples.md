@@ -274,5 +274,7 @@ e.g. :
 
 **Answer**: Execute Automation Studio/ Project/ Export to RUC and you will get a .zip and a transfer.pil.
 Create a tempory directory on your harddisk.
-After that start Runtime Utility Center and execute 'Create installation package' and use the above transfer.pil as source and the directory above as target. RUC will copy all necessary PVI files to this directory.
+After that start Runtime Utility Center and execute 'Create installation package' 
+![IconCreateInstallationPackage](https://github.com/hilch/brsnmp/blob/master/doc/IconCreateInstallationPackage.png)
+and use the above transfer.pil as source and the directory above as target. RUC will copy all necessary PVI files to this directory.
 
