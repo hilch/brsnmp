@@ -194,11 +194,56 @@ StopPviMan
 ```
 
 
+## Example 5
+remote install X20CP0410 via network (Onboard AR C4.10) with AR4.53
+
+```
+OnErrorBreak
+Remark "remote install X20CP0410 via network (Onboard AR C4.10) with AR4.53"
+StartPviMan "LoadLocal"
+Remark "Create Partition to erase Flash"
+Call "brsnmp.exe", "--ipMethod=0 --filter=X20CP0410 --timeout=5000", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=3000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+CFCreatePart "HD0", "1", "100, 'SYSTEM'"
+CFFormatPart "HD0", "C", "SYSTEM"
+Warmstart "60"
+Remark "at this point plc contains Onboard AR only which does not accept 'Transfer' command"
+
+
+Remark "download 'raw' AR A4.53"
+Call "brsnmp.exe", "--ipMethod=0 --filter=$LAST --timeout=5000", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=3000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=30"
+Download ".\RUCPackage_0\X20CP04xxA45.s13", "ROM"
+Warmstart "60"
+Remark "We've only one partition here"
+
+
+Remark "transfer real project"
+Call "brsnmp.exe", "--ipMethod=0 --filter=$LAST --timeout=5000", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=99", "/RT=3000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /ANSL=1 /PT=11169", "WT=30"
+Transfer "RUCPackage_0\RucPackage_X20CP0410_Config1.zip", "InstallMode=ForceInitialInstallation TryToBootInRUNMode=1 ResumeAfterRestart=1"
+Wait "60"
+Remark "Check if new AR is installed"
+Call "brsnmp.exe", "--ipMethod=0 --filter=$LAST --timeout=5000", "HideWindow=1"
+Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
+Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=3000 /AM=* /SDT=5 /DAIP=192.168.0.14 /REPO=11159 /PT=11169 /ANSL=1", "WT=80"
+SSWVersion
+
+Remark "delete last filter settings"
+Call "brsnmp.exe", "--filter= --timeout=50", "HideWindow=1"
+
+StopPviMan
+
+
+```
 
 
 ## FAQs
 
-a) what are the *.s* files (PPC7xG43.s14, X20CP1301G41.s1) and where can I download them ?
+* * a) what are the *.s* files (PPC7xG43.s14, X20CP1301G41.s1) and where can I download them ? * *
 
 **Answer**: the *.s* files are the 'raw' Automation Runtime modules which you can find in your Automation Studio common path ```..\BrAutomation\As\System\XXXX\``` 
 
@@ -216,7 +261,10 @@ e.g. :
 
 ![S_Files_B3](https://github.com/hilch/brsnmp/blob/master/doc/S_Files_B3.PNG)
 
-b) why did you put '--timeout=5000' in combination with '--ipMethod=0' ?
+* *b) why did you put '--timeout=5000' in combination with '--ipMethod=0' ?* *
 
 **Answer**: it seems that some plc need some more time when switching to manual ip address. If anybody has some more information your help will be welcome.
 
+* *c) brsnmp does'nt work...
+
+**Answer**: there are a lot of pitfalls using brsnmp in Batch- files or PIL- lists as it gives no valueable return values at the moment. E.g. an invalid '--filter=xxx' will return an empty list '[]' but that's not an failure itself. Please consider to test your settings on commandline via a 'DOS'- box (cmd.exe) instead.
