@@ -4,9 +4,9 @@
 
 Execute PVI-SNMP commands for B&amp;R plcs
 
-## Example application
+## Example application(s)
 
-Use within Runtime Utility Center *.pil file to setup a new CPU in BOOT state via network
+Use within Runtime Utility Center *.pil file to setup a *new* or *unreachable* CPU in BOOT state via network.
 
 see [Examples](https://github.com/hilch/brsnmp/blob/master/examples.md)
 
