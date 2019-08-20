@@ -132,9 +132,6 @@ Remark "Start PVI, use local instance"
 StartPviMan "LoadLocal"
 OnErrorBreak
 
-Remark "Create AR with embedded IP-Address"
-ARUpdateFileGenerate ".\CleanAR\X20CP1584K43.s14", ".\CleanAR\arupdate.br", ".\CleanAR\arconfig.br | .\CleanAR\asfw.br | .\CleanAR\ashwd.br | .\CleanAR\sysconf.br"
-
 Remark "Search for CPU and set IP address"
 Call "brsnmp.exe", "--ipMethod=0 --filter=X20CP1584 --timeout=5000", "HideWindow=1"
 Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST ", "HideWindow=1"
@@ -166,7 +163,7 @@ Remark "we need an AR with more capabilities and use K4.34"
 Call "brsnmp.exe", "--ipMethod=0 --filter=$LAST --timeout=5000", "HideWindow=1"
 Call "brsnmp.exe", "--ipAddress=192.168.0.14 --subnetMask=255.255.255.0 --filter=$LAST", "HideWindow=1"
 Connection "/IF=tcpip /LOPO=11159 /SA=113", "/RT=3000 /AM=* /SDT=5 /DAIP=192.168.0.14 /ANSL=1", "WT=120"
-Download "C:\projects\Drehmo\Setup\CleanAR\X20CP1584K43.s14", "ROM"
+Download ".X20CP1584K43.s14", "ROM"
 Coldstart "80"
 Remark "we've got an unknown number of partitions at this point and downloading AR won't change this"
 ClearError
