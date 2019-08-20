@@ -277,4 +277,5 @@ Create a tempory directory on your harddisk.
 After that start Runtime Utility Center and execute 'Create installation package' 
 ![IconCreateInstallationPackage](https://github.com/hilch/brsnmp/blob/master/doc/IconCreateInstallationPackage.png)
 and use the above transfer.pil as source and the directory above as target. RUC will copy all necessary PVI files to this directory.
+Starting with Version 4.5.2 PVI should run fine without former installation.
 
