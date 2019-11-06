@@ -4,6 +4,8 @@
 
 Execute PVI-SNMP commands for B&amp;R plcs
 
+download MS-Windows binary from [here](https://github.com/hilch/brsnmp/releases)
+
 ## Example application(s)
 
 Use within Runtime Utility Center *.pil file to setup a *new* or *unreachable* CPU in BOOT state via network without need of Automation Studio.
