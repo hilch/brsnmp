@@ -59,7 +59,7 @@ sets filter to given MAC address *(regular expression)*
 
 sets filter for X20CP3585. *(simple filter, no regex. 'X20CP3585' must not have be used as hostname in this case)*
 
-```--filter=@LAST```
+```--filter=$LAST```
 sets filter to the expression from previous call (V1.0++)
 (all filter expressions are stored in TEMP directory)
 
