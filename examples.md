@@ -240,6 +240,24 @@ StopPviMan
 
 ```
 
+## Example 6
+factory reset a X20CP0483 via network, e.g. format onboard flash
+
+```
+Remark "factory reset X20CP0483 via network"
+StartPviMan "LoadLocal"
+OnErrorBreak
+Call "brsnmp.exe", "--ipMethod=0 --filter=X20CP0483 --timeout=5000", "HideWindow=1"
+Remark "set a temporary IP that fits to your network"
+Call "brsnmp.exe", "--ipAddress=169.254.62.10 --subnet=255.255.255.0 --filter=$LAST"
+Connection "/IF=tcpip /SA=99", "/RT=1000 /AM=* /SDT=5 /DAIP=169.254.62.10 /ANSL=1", "WT=30"
+Remark "clear the onboard flash"
+CFCreatePart "HD0", "1", "100, 'SYSTEM'"
+CFFormatPart "HD0", "C", "SYSTEM"
+Warmstart "30"
+ClearError
+```
+
 
 ## FAQs
 
