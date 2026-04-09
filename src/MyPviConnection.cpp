@@ -10,8 +10,11 @@
 #include "MyPviConnection.h"
 #include "PviCom.h"
 #include "stringsplit.h"
+#include "json.hpp"
+
 
 using std::string;
+using json = nlohmann::json;
 
 // Buffer size constants
 constexpr unsigned int MyPviConnection::SMALL_BUFSIZE;
@@ -204,6 +207,50 @@ void MyPviConnection::WaitUntilPviIsConnected()
     else
         return;
 }
+
+
+std::string MyPviConnection::ReadPviVersionInfo(void)
+{
+    std::vector<char> buffer(SMALL_BUFSIZE);
+    DWORD linkIdPvi;
+
+    WaitUntilPviIsConnected();
+
+    m_result = PviCreate(&linkIdPvi, "@Pvi", POBJ_PVI, "", PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "");
+    if(m_result == 0){
+        m_result = PviRead(linkIdPvi, POBJ_ACC_VERSION, NULL, 0, buffer.data(), SMALL_BUFSIZE);
+        if(m_result == 0)
+        {
+            string s(buffer.data());
+
+            json result = json::array();
+            std::istringstream stream(s);
+            std::string line;
+    
+            // Pattern: name (file) version
+            std::regex pattern(R"((.+?)\s+\(([^)]+)\)\s+([^\n\r]+))");
+
+            while (std::getline(stream, line)) {
+                if (line.empty()) continue;
+        
+                std::smatch match;
+                if (std::regex_search(line, match, pattern)) {
+                    json obj;
+                    obj["name"] = match[1].str();
+                    obj["file"] = match[2].str();
+                    obj["version"] = match[3].str();
+                    result.push_back(obj);
+                }
+            }
+            return result.dump(2);
+        }
+
+    }
+    return "";
+
+}
+
+
 
 /* get detailed information from 'station' given as MAC address */
 int MyPviConnection::GetPlcDetails(const string& macAddress, std::vector<string>& details)

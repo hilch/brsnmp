@@ -26,6 +26,7 @@ public:
         return m_result;
     }
     std::string& operator()(void);
+    std::string ReadPviVersionInfo(void);
 
 protected:
 

@@ -32,15 +32,17 @@ int main(int argc, char* argv[] )
         cout << help();
         return argc == 1 ? -1 : 0;
     }
+
+    MyPviConnection con = MyPviConnection::getInstance();
+
     if (cmdl[ { "-v","--version" }] )
     {
         std::cout << "{\n\"brsnmp\":\"1.1\",\n";
         std::cout << "\"build-time\":\"" << __TIME__ << "\",\n";
-        std::cout << "\"build-date\":\"" << __DATE__ << "\"\n}\n";
+        std::cout << "\"build-date\":\"" << __DATE__ << "\",\n";
+        std::cout << "\"PVI-Version\":" << con.ReadPviVersionInfo() << "\n}";
         return 0;
     }
-
-    MyPviConnection con = MyPviConnection::getInstance();
 
     /* set filter */
     string filter = cmdl({"-f", "--filter"}).str();
