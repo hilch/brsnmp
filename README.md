@@ -1,11 +1,69 @@
 
-# brsnmp 
+# brsnmp
+
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Made For B&R](https://github.com/hilch/BandR-badges/blob/main/Made-For-BrAutomation.svg)](https://www.br-automation.com)
 
 Execute PVI-SNMP commands for B&amp;R plcs
 
-download MS-Windows binary from [here](https://github.com/hilch/brsnmp/releases)
+## Intention
+
+SNMP commands enable remote network configuration and monitoring of B&R PLCs without physical access.
+Anyone who uses B&R Automation Studio has unconsciously used SNMP commands at some point when temporarily assigning a new IP address to a controller on the network via the "Online/Settings" menu.
+Unfortunately, these functions are not yet available in the Runtime Utility Center (RUC).
+The SNMP functions are part of PVI. This project therefore utilizes these functions and provides them as simple commands.
+
+## Download binary
+
+download MS-Windows binary from [https://github.com/hilch/brsnmp/releases](https://github.com/hilch/brsnmp/releases)
+
+## Building
+
+### Requirements
+
+- **Windows**: 32-bit MinGW compiler (for PviCom.lib compatibility)
+- **MSYS2**: Recommended for managed, pre-built toolchain
+
+#### Setup (One-time)
+
+1. Download and run the [MSYS2 installer](https://www.msys2.org/) for Windows
+2. Open the **MSYS2 MINGW32** terminal
+3. Install the 32-bit MinGW toolchain:
+
+   ```bash
+   pacman -S --noconfirm --needed mingw-w64-i686-toolchain
+   ```
+
+### Build Methods
+
+#### Option 1: PowerShell Build Script (Recommended)
+
+```powershell
+.\build.ps1 release      # Build release executable
+.\build.ps1 debug        # Build debug executable  
+.\build.ps1 clean        # Clean build outputs
+.\build.ps1 -Help        # Show usage
+```
+
+#### Option 2: GNU Make (Auto-detects MSYS2)
+
+```powershell
+mingw32-make release     # Build release executable
+mingw32-make debug       # Build debug executable
+mingw32-make clean       # Clean build outputs
+```
+
+#### Option 3: VS Code Tasks
+
+- Press `Ctrl+Shift+B` to run the default build task (Release)
+- Use `Ctrl+Shift+P` → `Tasks: Run Task` to select other tasks (Debug, Clean, etc.)
+
+### Output
+
+Compiled binaries are placed in:
+
+- **Release**: `bin/Release/brsnmp.exe` (optimized, no symbols)
+- **Debug**: `bin/Debug/brsnmp.exe` (with debug symbols)
 
 ## Example application(s)
 
@@ -29,7 +87,8 @@ see [Examples](https://github.com/hilch/brsnmp/blob/master/examples.md)
 ### `--version`
 
 outputs the program version in JSON e.g.
-```
+
+```powershell
 {
 "brsnmp":"0.1",
 "build-time":"09:47:24",
@@ -40,7 +99,7 @@ outputs the program version in JSON e.g.
 ### `--filter`
 
 sets a filter for the operations to be executed (highly recommended if you plan to set the ip settings :grimacing: ). The filter is applied to a --details - output.
-The filter is an ECMA Regual Expression (https://regex101.com/#javascript).
+The filter is an ECMA Regual Expression [regex101.com](https://regex101.com/#javascript).
 But in most cases a simple text should be sufficient.
 
 ```--filter=targetTypeDescription.+X20CP\d{4}```
@@ -71,10 +130,10 @@ clears previous filter settings and sets filter to 'all' (V1.0++)
 
 sets filter to 'all'. (As this expression is default, it can be omitted.)
 
-
 ### `--list`
 
 outputs a list of MAC of reachable PLCs as JSON array e.g.
+
 ```json
 [
 "00-60-65-16-fd-da"
@@ -87,6 +146,7 @@ outputs a list of MAC of reachable PLCs as JSON array e.g.
 ### `--details`
 
 outputs a detailed list of reachable PLCs as JSON array of objects e.g.
+
 ```json
 [
 {
@@ -127,7 +187,6 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 possible values and their meanings:
 ![SNMPVariables](https://github.com/hilch/brsnmp/blob/master/doc/SnmpVariables.PNG)
 
-
 **FAQ**: how can I store this list ?
 
 **Answer**: ```brsnmp --details > details.json```
@@ -142,6 +201,8 @@ ipAddress=192.168.0.14
 subnetMask=255.255.255.0
 
 ```
+
+```batch
 if <VALUE> is surrounded by '%' character an environment variable is used e.g.
 
 ```batch
@@ -149,7 +210,6 @@ if <VALUE> is surrounded by '%' character an environment variable is used e.g.
 ipAddress=%IP_ADDRESS%
 
 ```
-
 
 (only parameters which are declared RW can be written. see description of --details)
 
@@ -190,8 +250,9 @@ at the end of *.pil is recommended.
 
 ### IDE
 
-[Code::Blocks](http://www.codeblocks.org/)
+If you prefer a IDE [Code::Blocks](http://www.codeblocks.org/) is suitable.
+Find a project file for it in the repo.
 
 ### Dependencies
 
-Thanks to https://github.com/adishavit/argh for the command line parser
+Thanks to [https://github.com/adishavit/argh](https://github.com/adishavit/argh) for the command line parser
