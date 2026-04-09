@@ -13,6 +13,15 @@ Anyone who uses B&R Automation Studio has unconsciously used SNMP commands at so
 Unfortunately, these functions are not yet available in the Runtime Utility Center (RUC).
 The SNMP functions are part of PVI. This project therefore utilizes these functions and provides them as simple commands.
 
+Please note that Automation Studio 6 disables the SNMP protocol by default in new projects. However, if the target is switched to BOOT mode, SNMP should be enabled again.
+
+## PVI
+
+Based on my findings so far, PVI version 4.12 can also be used with Automation Runtime >= 6.0. Therefore, version 1.0 should still work in this case as well.
+
+However, if only PVI version 6 is installed, version 1.1 must be used.
+There were some SNMP issues with PVI 6, but these were resolved in PVI 6.5.2.
+
 ## Download binary
 
 download MS-Windows binary from [https://github.com/hilch/brsnmp/releases](https://github.com/hilch/brsnmp/releases)
