@@ -255,4 +255,6 @@ Find a project file for it in the repo.
 
 ### Dependencies
 
-Thanks to [https://github.com/adishavit/argh](https://github.com/adishavit/argh) for the command line parser
+Thanks to [https://github.com/adishavit/argh](https://github.com/adishavit/argh) for the command line parser.
+Additional thatnks to [https://github.com/nlohmann/json](https://github.com/nlohmann/json) for the JSON lib.
+
