@@ -44,40 +44,45 @@ int main(int argc, char* argv[] )
 
     /* set filter */
     string filter = cmdl({"-f", "--filter"}).str();
-    con.SetFilter(filter);
+    if(con.SetFilter(filter) != 0)
+    {
+        cerr << "Failed to set filter" << endl;
+        return -1;
+    }
 
     /* set communication timeout */
     unsigned int timeout = 0;
-    if( !(cmdl({"-t","--timeout"},3000) >> timeout) )
+    if(!(cmdl({"-t", "--timeout"}, 3000) >> timeout))
     {
-        cerr << "must provide a valid timeout !";
+        cerr << "must provide a valid timeout !" << endl;
         return -1;
     }
     con.SetTimeout(timeout);
 
     /* add a SNMP process variable for writing */
-
-    for( auto pv : con.GetWritablePvars() )
+    for(const auto& pv : con.GetWritablePvars())
     {
         string value = "";
         cmdl(pv) >> value;
-        if( value.length() > 0 )
-            con.AppendVariable(pv, value );
+        if(value.length() > 0)
+            con.AppendVariable(pv, value);
     }
 
     /* do we want a list of MACs ? */
-    if (cmdl[{ "-l", "--list" }] )
+    if(cmdl[{"-l", "--list"}])
         con.ShowList(false);
 
     /* or do we need a detailed list ? */
-    if (cmdl[{ "-d", "--details" }] )
+    if(cmdl[{"-d", "--details"}])
         con.ShowList(true);
 
-    cout <<  con() << endl;
+    cout << con() << endl;
 
+    int result = con.Result();
+    if(result != 0)
+        cerr << "Error executing command: " << result << endl;
 
-
-    return con.Result();
+    return result;
 }
 
 
