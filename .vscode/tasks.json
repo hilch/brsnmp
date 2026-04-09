@@ -1,0 +1,110 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "brsnmp: Build Release",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw32\\bin\\mingw32-make.exe",
+            "args": [
+                "SHELL=cmd",
+                "release"
+            ],
+            "options": {
+                "env": {
+                    "Path": "C:\\msys64\\mingw32\\bin;${env:Path}"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "brsnmp: Build Debug",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw32\\bin\\mingw32-make.exe",
+            "args": [
+                "SHELL=cmd",
+                "debug"
+            ],
+            "options": {
+                "env": {
+                    "Path": "C:\\msys64\\mingw32\\bin;${env:Path}"
+                }
+            },
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "brsnmp: Clean",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw32\\bin\\mingw32-make.exe",
+            "args": [
+                "SHELL=cmd",
+                "clean"
+            ],
+            "options": {
+                "env": {
+                    "Path": "C:\\msys64\\mingw32\\bin;${env:Path}"
+                }
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "brsnmp: Clean and Build Release",
+            "type": "shell",
+            "command": "C:\\msys64\\mingw32\\bin\\mingw32-make.exe",
+            "args": [
+                "SHELL=cmd",
+                "clean",
+                "release"
+            ],
+            "options": {
+                "env": {
+                    "Path": "C:\\msys64\\mingw32\\bin;${env:Path}"
+                }
+            },
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "brsnmp: Run Release",
+            "type": "shell",
+            "command": "bin\\Release\\brsnmp.exe",
+            "args": [
+                "--help"
+            ],
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "dependsOn": [
+                "brsnmp: Build Release"
+            ]
+        }
+    ]
+}
