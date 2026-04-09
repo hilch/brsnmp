@@ -17,9 +17,9 @@ Please note that Automation Studio 6 disables the SNMP protocol by default in ne
 
 ## PVI
 
-Based on my findings so far, PVI version 4.12 can also be used with Automation Runtime >= 6.0. Therefore, version 1.0 should still work in this case as well.
+Based on my findings so far, PVI version 4.12 can also be used with Automation Runtime >= 6.0. Therefore, brsnmp.exe version 1.0 should still work in this case as well.
 
-However, if only PVI version 6 is installed, version 1.1 must be used.
+However, if only PVI version 6 is installed, brsnmp.exe version 1.1 must be used.
 There were some SNMP issues with PVI 6, but these were resolved in PVI 6.5.2.
 
 ## Download binary
