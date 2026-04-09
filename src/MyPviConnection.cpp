@@ -4,6 +4,7 @@
 #include <regex>
 #include <fstream>
 #include <cstdio>
+#include <cstdint>
 
 #include "MyPviConnection.h"
 #include "PviCom.h"
@@ -30,7 +31,7 @@ MyPviConnection::MyPviConnection() : m_filter{".*"}, m_listRequested{false}, m_d
             m_result = PviSetGlobEventMsg( POBJ_EVENT_PVI_ARRANGE, PVI_HMSG_NIL, SET_PVIFUNCTION, 0 );
     }
     char* buffer = new char[MAX_PATH+1];
-    size_t length = GetTempPath( MAX_PATH+1, buffer );
+    size_t length = GetTempPathA( MAX_PATH+1, buffer );
     m_lastFilterResultFileName.append( buffer, length );
     delete[] buffer;
     m_lastFilterResultFileName += "brsnmplastfilter.txt";
@@ -279,7 +280,7 @@ int MyPviConnection::WriteSnmpVariable( string macAddress, string name, string v
     if( sm.size() == 2 )  /* an environment variable was given as value */
     {
        string envVariableName = sm[1];
-       if( GetEnvironmentVariable( envVariableName.c_str(), buffer, BUFSIZE) )
+       if( GetEnvironmentVariableA( envVariableName.c_str(), buffer, BUFSIZE) )
        {
            value.assign(buffer);  /* use content of environment variable */
        }
