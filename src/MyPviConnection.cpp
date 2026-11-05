@@ -338,16 +338,32 @@ int MyPviConnection::WriteSnmpVariable(const string& macAddress, const string& n
     if(sm.size() == 2)  /* an environment variable was given as value */
     {
        string envVariableName = sm[1];
-       if(GetEnvironmentVariableA(envVariableName.c_str(), buffer.data(), SMALL_BUFSIZE))
-       {
-           writeValue.assign(buffer.data());  /* use content of environment variable */
-       }
-       else
+       DWORD envLength = GetEnvironmentVariableA(
+           envVariableName.c_str(), buffer.data(), static_cast<DWORD>(buffer.size()));
+       if(envLength == 0)
        {
            m_result = -1;
            std::cerr << "environment variable not found: \"" << value << "\" !\n";
            return -1;
        }
+
+       /* A length >= buffer size means the environment value did not fit. */
+       if(static_cast<size_t>(envLength) >= buffer.size())
+       {
+           m_result = -1;
+           std::cerr << "environment variable value is too long: \"" << value << "\" !\n";
+           return -1;
+       }
+
+       writeValue.assign(buffer.data(), static_cast<size_t>(envLength));
+    }
+
+    /* Leave room for the null terminator written before PviWrite. */
+    if(writeValue.length() >= buffer.size())
+    {
+        m_result = -1;
+        std::cerr << "value is too long for the PVI buffer\n";
+        return -1;
     }
 
     m_result = PviCreate(&linkIdStation, "@Pvi/LnSNMP/Device/Station", POBJ_STATION, stationDescriptor.c_str(), PVI_HMSG_NIL, SET_PVIFUNCTION, 0, "");
