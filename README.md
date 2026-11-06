@@ -194,7 +194,32 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ```
 
 possible values and their meanings:
-![SNMPVariables](https://github.com/hilch/brsnmp/blob/master/doc/SnmpVariables.PNG)
+
+| Variable name | Data format | I/O | Description |
+| --- | --- | --- | --- |
+| MAC addresses | string | R | List of MAC addresses for all B&R PLCs with SNMP support that can be reached on the network. Entries are separated by a tab character (0x09). Each entry is 18 characters long (including tab character).<br>Each read access is not ended until the response timeout (/RT parameter) configured for the device object has expired. During this time, response data is gathered from the individual PLCs. |
+| snmpMode | number | R | 0 ... SNMP not enabled, 1 ... SNMP read-only, 2 ... SNMP enabled |
+| targetTypeDescription | string | R | Description of the CPU (e.g. 3CP360.60-1). |
+| serialNumber | string | R | PLC serial number. |
+| cfSerialNumber | string | R | CompactFlash serial number |
+| arVersion | string | R | AR version |
+| arVersionNorm | string | R | Standardized AR version |
+| arState | number | R | AR status: -1 ... Undefined, 1 ... Boot, 2 ... Diagnose, 3 ... Service, 4 ... Run |
+| arBootPhase | number | R | Boot phase: -1 ... Undefined, 10 ... Boot, 20 ... Hardware init / Firmware update, 30 ... Initialization subroutine, 40 ... AR ready |
+| deviceName | string | R | Ethernet device name (e.g. SS1.IF2) |
+| macAddress | string | R | MAC address (e.g. 00-60-ef-01-15-5a) |
+| baudrate | number | RW | Ethernet baud rate: 0 ... Auto, 10 ... 10 MBit HD (half-duplex), 11 ... 10 MBit FD (full-duplex), 12 ... 10 MBit Auto, 100 ... 100 MBit HD, 101 ... 100 MBit FD, 102 ... 100 MBit Auto |
+| ipAddress | string | RW | IP address |
+| subnetMask | string | RW | Subnet mask (e.g. 255.255.255.0) |
+| ipMethod | number | RW | 0 ... Static IP, 1 ... DHCP client |
+| nodeNumber | number | R | Hardware node number. |
+| hostName | string | RW | Hostname (e.g. BR_HOST) |
+| defaultGateway | string | RW | Default gateway. |
+| dnsActivated | number | RW | 0 ... INA not enabled, 1 ... INA enabled |
+| dnsFromDhcp | number | RW | Get DNS parameters from DHCP: 0 ... Not enabled, 1 ... Enabled |
+| dnsServer1 | string | RW | DNS server 1 |
+| dnsServer2 | string | RW | DNS server 2 |
+| dnsServer3 | string | RW | DNS server 3 |
 
 **FAQ**: how can I store this list ?
 
