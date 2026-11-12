@@ -276,8 +276,8 @@ brsnmp is made available free of charge.
 
 ## PVI
 
-brsnmp requires PVI 4.x.
-it needs a previously installed [PVI Development Setup](https://www.br-automation.com/en/downloads/#categories=Software/Automation+NET%2FPVI) to run.
+brsnmp requires PVI ( V4.x. for brsnmp V1.0 and >= V6.5.2 for brsnmp >= 1.1).
+It needs a previously installed [PVI Development Setup](https://www.br-automation.com/en/downloads/#categories=Software/Automation+NET%2FPVI) to run.
 Beware: if you do not own a PVI license **1TG0500.02** (+ TG Guard e.t. 0TG1000.02) PVI will run for two hours only. After this period brsnmp will stop working and PVI-Manager must be stopped and restarted again.
 Contact your local B&R office for a license.
 
