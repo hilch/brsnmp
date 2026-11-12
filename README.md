@@ -1,4 +1,3 @@
-
 # brsnmp
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -212,11 +211,13 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 
 ### SNMP - 'Variables'
 
-possible values and their meanings:
+See [SNMP - 'Variables'](#snmp---variables) for possible values and their meanings.
+
+Possible values and their meanings:
 
 | Variable name | Data format | I/O | Description |
 | --- | --- | --- | --- |
-| MAC addresses | string | R | List of MAC addresses for all B&R PLCs with SNMP support that can be reached on the network. Entries are separated by a tab character (0x09). Each entry is 18 characters long (including tab character).<br>Each read access is not ended until the response timeout (/RT parameter) configured for the device object has expired. During this time, response data is gathered from the individual PLCs. |
+| MAC addresses | string | R | List of MAC addresses for all B&R PLCs with SNMP support that can be reached on the network. Entries are separated by a tab character (0x09). Each entry is 18 characters long.
 | snmpMode | number | R | 0 ... SNMP not enabled, 1 ... SNMP read-only, 2 ... SNMP enabled |
 | targetTypeDescription | string | R | Description of the CPU (e.g. 3CP360.60-1). |
 | serialNumber | string | R | PLC serial number. |
@@ -312,5 +313,5 @@ Find a project file for it in the repo.
 ### Dependencies
 
 Thanks to [https://github.com/adishavit/argh](https://github.com/adishavit/argh) for the command line parser.
-Additional thatnks to [https://github.com/nlohmann/json](https://github.com/nlohmann/json) for the JSON lib.
+Additional thanks to [https://github.com/nlohmann/json](https://github.com/nlohmann/json) for the JSON lib.
 
