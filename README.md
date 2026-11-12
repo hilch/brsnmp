@@ -97,11 +97,28 @@ see [Examples](https://github.com/hilch/brsnmp/blob/master/examples.md)
 
 outputs the program version in JSON e.g.
 
-```powershell
+```json
 {
-"brsnmp":"0.1",
-"build-time":"09:47:24",
-"build-date":"Nov 27 2018"
+"brsnmp":"1.1",
+"build-time":"14:50:00",
+"build-date":"Apr  9 2026",
+"PVI-Version":[
+  {
+    "file": "Pvi6Man.exe",
+    "name": "PVI 6 Manager",
+    "version": "6.7.1.0"
+  },
+  {
+    "file": "Pvi6Com64.dll",
+    "name": "PVI Communication Library",
+    "version": "6.7.1.0"
+  },
+  {
+    "file": "Pvi6Log64.dll",
+    "name": "PVI Data Logger",
+    "version": "6.7.1.0"
+  }
+]
 }
 ```
 
@@ -193,6 +210,8 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 ]
 ```
 
+### SNMP - 'Variables'
+
 possible values and their meanings:
 
 | Variable name | Data format | I/O | Description |
@@ -227,21 +246,23 @@ possible values and their meanings:
 
 ### `--<NAME>=<VALUE>`
 
-sets parameter `<NAME>` to `<VALUE>` e.g.
+sets SNMP - Variable `<NAME>` to `<VALUE>` e.g.
 
 ```batch
 
-ipAddress=192.168.0.14
-subnetMask=255.255.255.0
+brsnmp --ipAddress=192.168.0.14 --subnetMask=255.255.255.0
 
 ```
 
 ```batch
+
 if <VALUE> is surrounded by '%' character an environment variable is used e.g.
+
+```
 
 ```batch
 
-ipAddress=%IP_ADDRESS%
+brsnmp ipAddress=%IP_ADDRESS%
 
 ```
 
