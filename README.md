@@ -211,8 +211,6 @@ outputs a detailed list of reachable PLCs as JSON array of objects e.g.
 
 ### SNMP - 'Variables'
 
-See [SNMP - 'Variables'](#snmp---variables) for possible values and their meanings.
-
 Possible values and their meanings:
 
 | Variable name | Data format | I/O | Description |
@@ -247,7 +245,10 @@ Possible values and their meanings:
 
 ### `--<NAME>=<VALUE>`
 
-sets SNMP - Variable `<NAME>` to `<VALUE>` e.g.
+sets SNMP - Variable `<NAME>` to `<VALUE>`.
+See [SNMP - 'Variables'](#snmp---variables) for possible values and their meanings.
+
+Example:
 
 ```batch
 
