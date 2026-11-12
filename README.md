@@ -245,10 +245,11 @@ Possible values and their meanings:
 
 ### `--<NAME>=<VALUE>`
 
-sets SNMP - Variable `<NAME>` to `<VALUE>`.
+sets SNMP - Variable `<NAME>` to `<VALUE>`. Only parameters which are declared 'RW' can be written.
+if <VALUE> is surrounded by '%' character an environment variable is used.
 See [SNMP - 'Variables'](#snmp---variables) for possible values and their meanings.
 
-Example:
+Examples:
 
 ```batch
 
@@ -258,17 +259,9 @@ brsnmp --ipAddress=192.168.0.14 --subnetMask=255.255.255.0
 
 ```batch
 
-if <VALUE> is surrounded by '%' character an environment variable is used e.g.
-
-```
-
-```batch
-
 brsnmp ipAddress=%IP_ADDRESS%
 
 ```
-
-(only parameters which are declared RW can be written. see description of --details)
 
 ## Disclaimer
 
